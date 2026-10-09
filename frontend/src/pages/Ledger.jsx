@@ -35,24 +35,24 @@ export default function Ledger() {
         : <div className="banner bad">✗ Зөрчил илэрлээ: {v.issues.map((i) => `блок #${i.index} — ${i.problems.map((p) => PROBLEM[p] || p).join(', ')}`).join('; ')}</div>)}
       <Err msg={err} />
       <div className="card">
-        <div className="row between">
+        <div className="row between toolbar">
           <h2 className="m0">Хэш гинжин бүртгэл {data && <span className="muted">({data.total} блок)</span>}</h2>
-          <div className="row">
+          <div className="row btns">
             <button className="btn" onClick={verify}>Бүрэн бүтэн байдлыг шалгах</button>
             {isAdmin && <button className="btn danger" onClick={tamper}>Демо: саналыг нууцаар засах</button>}
             {isAdmin && <button className="btn ghost" onClick={restore}>Сэргээх</button>}
           </div>
         </div>
         <div className="scroll">
-          <table>
+          <table className="rtable">
             <thead><tr><th>#</th><th>Цаг</th><th>Сэдэв</th><th>Агуулгын хэш</th><th>Өмнөх хэш</th><th>Блокийн хэш</th><th>Төлөв</th></tr></thead>
             <tbody>
               {data?.blocks.map((b) => (
                 <tr key={b.index} className={bad.has(b.index) ? 'broken' : ''}>
-                  <td>{b.index}</td><td className="nowrap">{fmt(b.timestamp)}</td><td>{b.category}</td>
-                  <td><Hash h={b.content_hash} /></td><td><Hash h={b.prev_hash} /></td>
-                  <td><a href={`#/receipt/${b.block_hash}`}><Hash h={b.block_hash} /></a></td>
-                  <td>{!v ? <span className="muted">—</span> : bad.has(b.index) ? <span className="pill p-neg">Зөрчил</span> : <span className="pill p-pos">Баталгаатай</span>}</td>
+                  <td data-label="#">{b.index}</td><td data-label="Цаг" className="nowrap">{fmt(b.timestamp)}</td><td data-label="Сэдэв">{b.category}</td>
+                  <td data-label="Агуулгын хэш"><Hash h={b.content_hash} /></td><td data-label="Өмнөх хэш"><Hash h={b.prev_hash} /></td>
+                  <td data-label="Блокийн хэш"><a href={`#/receipt/${b.block_hash}`}><Hash h={b.block_hash} /></a></td>
+                  <td data-label="Төлөв">{!v ? <span className="muted">—</span> : bad.has(b.index) ? <span className="pill p-neg">Зөрчил</span> : <span className="pill p-pos">Баталгаатай</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -63,11 +63,11 @@ export default function Ledger() {
       <div className="card">
         <h2>Нийтийн блокчейнд баталгаажуулалт (Merkle anchor)</h2>
         <p className="muted small">Олон блокийг нэг Merkle root болгон нэгтгэж, ухаалаг гэрээгээр нийтийн сүлжээнд нэг гүйлгээгээр бичнэ.</p>
-        <table>
+        <table className="rtable">
           <thead><tr><th>#</th><th>Блокууд</th><th>Merkle root</th><th>Сүлжээ</th><th>Гүйлгээ</th><th>Огноо</th></tr></thead>
           <tbody>
             {anchors.map((a) => (
-              <tr key={a.id}><td>{a.id}</td><td>{a.from_index}–{a.to_index}</td><td><Hash h={a.merkle_root} n={16} /></td><td>{a.network}</td><td>{a.tx_hash ? <Hash h={a.tx_hash} /> : <span className="muted">—</span>}</td><td>{fmt(a.created_at)}</td></tr>
+              <tr key={a.id}><td data-label="#">{a.id}</td><td data-label="Блокууд">{a.from_index}–{a.to_index}</td><td data-label="Merkle root"><Hash h={a.merkle_root} n={16} /></td><td data-label="Сүлжээ">{a.network}</td><td data-label="Гүйлгээ">{a.tx_hash ? <Hash h={a.tx_hash} /> : <span className="muted">—</span>}</td><td data-label="Огноо">{fmt(a.created_at)}</td></tr>
             ))}
             {anchors.length === 0 && <tr><td colSpan="6" className="muted">Anchor хараахан хийгдээгүй (Админ хэсгээс хийнэ).</td></tr>}
           </tbody>

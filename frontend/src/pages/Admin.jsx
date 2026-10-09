@@ -62,23 +62,23 @@ export default function Admin() {
       </div>
 
       <div className="card">
-        <div className="row between">
+        <div className="row between toolbar">
           <h2 className="m0">Саналд хариу өгөх</h2>
           <select value={filter} onChange={(e) => setFilter(e.target.value)} className="auto">
             <option value="">Бүгд</option>
             {Object.entries(STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
         </div>
-        <table>
+        <table className="rtable">
           <thead><tr><th>#</th><th>Санал</th><th>Ангилал</th><th>Төлөв</th><th>Хариу / үйлдэл</th></tr></thead>
           <tbody>
             {props.map((p) => (
               <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{p.text ?? <span className="muted">(эзнийхээ хүсэлтээр устгагдсан)</span>}<div className="muted small">{p.age_group} · {p.location}</div></td>
-                <td><Pill kind="cat">{p.category}</Pill><br /><SentPill s={p.sentiment} /> <UrgPill u={p.urgency} /></td>
-                <td><StatusPill s={p.status} /></td>
-                <td className="actions">
+                <td data-label="#">{p.id}</td>
+                <td data-label="Санал" className="wide">{p.text ?? <span className="muted">(эзнийхээ хүсэлтээр устгагдсан)</span>}<div className="muted small">{p.age_group} · {p.location}</div></td>
+                <td data-label="Ангилал"><Pill kind="cat">{p.category}</Pill><br /><SentPill s={p.sentiment} /> <UrgPill u={p.urgency} /></td>
+                <td data-label="Төлөв"><StatusPill s={p.status} /></td>
+                <td data-label="Хариу" className="actions wide">
                   <input placeholder="Иргэнд өгөх хариу" value={notes[p.id] ?? p.response_note}
                     onChange={(e) => setNotes({ ...notes, [p.id]: e.target.value })} />
                   <div className="row">

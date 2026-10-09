@@ -22,7 +22,7 @@ export default function Dashboard() {
   const n = s.total || 1
   return (
     <div className="grid">
-      <div className="row between">
+      <div className="row between toolbar">
         <h2 className="m0">Хяналтын самбар</h2>
         <select value={cid} onChange={(e) => setCid(e.target.value)} className="auto">
           <option value="">Бүх санал</option>
@@ -53,11 +53,11 @@ export default function Dashboard() {
       </div>
       <div className="card">
         <h2>Яаралтай анхаарах саналууд</h2>
-        <table>
+        <table className="rtable">
           <thead><tr><th>Огноо</th><th>Санал</th><th>Сэдэв</th><th>Байршил</th><th>Яаралтай</th></tr></thead>
           <tbody>
             {urgent.filter((p) => p.text).map((p) => (
-              <tr key={p.id}><td className="nowrap">{fmt(p.created_at)}</td><td>{p.text}</td><td><Pill kind="cat">{p.category}</Pill></td><td>{p.location}</td><td><UrgPill u={p.urgency} /></td></tr>
+              <tr key={p.id}><td data-label="Огноо" className="nowrap">{fmt(p.created_at)}</td><td data-label="Санал" className="wide">{p.text}</td><td data-label="Сэдэв"><Pill kind="cat">{p.category}</Pill></td><td data-label="Байршил">{p.location}</td><td data-label="Яаралтай"><UrgPill u={p.urgency} /></td></tr>
             ))}
           </tbody>
         </table>

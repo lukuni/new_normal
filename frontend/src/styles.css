@@ -82,11 +82,48 @@ details{margin-top:12px}summary{cursor:pointer;color:var(--bad)}
 .brief blockquote{margin:6px 0;padding:6px 12px;border-left:3px solid var(--brand);background:#f7f9ff;font-size:13.5px}
 .line{padding:6px 0;border-bottom:1px solid var(--line)}
 .actions input{margin-bottom:4px}
-@media (max-width:900px){
-  .g2,.g2e,.g4,.hero{grid-template-columns:1fr}
+@media (max-width:1100px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:820px){
+  header{padding:12px 16px;gap:10px}
+  header h1{font-size:17px}
+  .chainstat{margin-left:0;font-size:12px}
+  nav{padding:0 6px;position:sticky;top:0;z-index:5;-webkit-overflow-scrolling:touch}
+  nav a{padding:12px 11px}
+  main{padding:14px}
+  .g2,.g2e,.hero{grid-template-columns:1fr}
+  .card{padding:14px}
+  .hero h2{font-size:20px}
+  .heroStats{grid-template-columns:repeat(3,1fr)}
+  .heroStats div{flex-direction:column;gap:0;padding:8px 10px}
   .steps{grid-template-columns:1fr 1fr}
-  main{padding:16px}
-  .bar{grid-template-columns:110px 1fr 32px}
+  input,select,textarea{font-size:16px}          /* stops iOS zoom on focus */
+  select.auto{width:100%}
+  .toolbar{align-items:stretch}
+  .toolbar>*{flex:1 1 100%}
+  .toolbar .row{width:100%}
+  .btns .btn{flex:1 1 100%;text-align:center}
+  .bar{grid-template-columns:110px 1fr 32px;font-size:13px}
+  .kv th{width:38%}
+  .timeline{gap:6px}.tl{font-size:12px;padding:8px 4px}
+  /* wide tables become stacked cards */
+  .scroll{overflow:visible}
+  table.rtable thead{display:none}
+  table.rtable tr{display:block;border:1px solid var(--line);border-radius:10px;margin:0 0 10px;padding:6px 10px;background:#fff}
+  table.rtable tr.broken{border-color:#f0b4ae;background:var(--bad-soft)}
+  table.rtable td{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start;gap:4px 8px;border:0;padding:5px 0;text-align:right}
+  table.rtable td br{display:none}
+  table.rtable td::before{content:attr(data-label);color:var(--muted);font-weight:600;text-align:left;margin-right:auto;padding-right:8px}
+  table.rtable td.wide{display:block;text-align:left}
+  table.rtable td.wide::before{display:block;margin-bottom:2px}
+  table.rtable td.nowrap{white-space:normal}
+}
+@media (max-width:420px){
+  .steps{grid-template-columns:1fr}
+  .g4{gap:10px}
+  .kpi .v{font-size:24px}
 }
 @media print{header,nav,footer,.noprint{display:none}body{background:#fff}.card{border:0}}
 .card h2.mt,.card h3.mt{margin-top:18px}

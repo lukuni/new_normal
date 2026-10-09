@@ -13,7 +13,7 @@ export default function Brief() {
 
   return (
     <div className="card brief">
-      <div className="row between noprint">
+      <div className="row between toolbar noprint">
         <h2 className="m0">Автомат бодлогын зөвлөмж</h2>
         <div className="row">
           <select value={cid} onChange={(e) => setCid(e.target.value)} className="auto">

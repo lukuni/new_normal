@@ -58,6 +58,41 @@
   .brief blockquote{margin:6px 0;padding:6px 12px;border-left:3px solid var(--brand);background:#f7f9ff;color:#2c3648;font-size:13.5px}
   .muted{color:var(--muted)}
   .note{font-size:12px;color:var(--muted);margin-top:10px}
+  /* ---------- responsive: tablet & phone ---------- */
+  .row .btn{white-space:nowrap}
+  #urgent td:first-child{white-space:nowrap}
+  @media (max-width:1100px){
+    .g4{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:820px){
+    header{padding:12px 16px;flex-wrap:wrap;gap:10px}
+    header h1{font-size:17px}
+    .chainstat{margin-left:0;font-size:12px}
+    nav{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:5}
+    nav button{white-space:nowrap;padding:12px 12px}
+    main{padding:14px}
+    .g2,.g2e{grid-template-columns:1fr}
+    .card{padding:14px}
+    input,select,textarea{font-size:16px}           /* stops iOS zoom on focus */
+    .bar{grid-template-columns:110px 1fr 32px;font-size:13px}
+    .row .btn{flex:1 1 auto}
+    #v-ledger .row{width:100%}
+    #v-ledger .row .btn{flex:1 1 100%;white-space:normal}
+    /* tables become stacked cards; labels come from data-label */
+    table.rt tr:first-child{display:none}
+    table.rt tr{display:block;border:1px solid var(--line);border-radius:10px;margin:0 0 10px;padding:6px 10px;background:#fff}
+    table.rt tr.broken{border-color:#f0b4ae}
+    table.rt td{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border:0;padding:5px 0;text-align:right}
+    table.rt td::before{content:attr(data-label);color:var(--muted);font-weight:600;text-align:left;flex:0 0 38%}
+    table.rt td.mono{font-size:11.5px}
+    table.rt td.mono::before{font-family:"Segoe UI",Roboto,"Liberation Sans",Arial,sans-serif;font-size:13px}
+    table.rt td>span{min-width:0}
+  }
+  @media (max-width:420px){
+    .g4{grid-template-columns:1fr 1fr;gap:10px}
+    .kpi .v{font-size:22px}
+    .legend{flex-wrap:wrap;gap:8px}
+  }
 </style>
 </head>
 <body>
@@ -99,7 +134,7 @@
       <div class="step"><b>4</b>Хяналтын самбар бодит цагт шинэчлэгдэнэ.</div>
       <div class="step"><b>5</b>Бодлогын зөвлөмж (policy brief) автоматаар бэлтгэгдэнэ.</div>
       <h2 style="margin-top:20px">Сүүлд ирсэн саналууд</h2>
-      <table id="recent"></table>
+      <table id="recent" class="rt"></table>
     </div>
   </div>
 </section>
@@ -118,7 +153,7 @@
   </div>
   <div class="card" style="margin-top:18px">
     <h2>Яаралтай анхаарах саналууд</h2>
-    <table id="urgent"></table>
+    <table id="urgent" class="rt"></table>
   </div>
 </section>
 
@@ -134,7 +169,7 @@
         <button class="btn ghost" id="restore">Сэргээх</button>
       </div>
     </div>
-    <table id="chain"></table>
+    <table id="chain" class="rt"></table>
     <p class="note">Блокчейнд саналын агуулга биш, зөвхөн агуулгын хэш, ангилал, цаг болон өмнөх блокийн хэш хадгалагдана (on-chain/off-chain эрлийз загвар).</p>
   </div>
 </section>
@@ -229,7 +264,9 @@ async function seed(){
 const $=s=>document.querySelector(s);
 const pillS=s=>`<span class="pill ${s==="Сөрөг"?"p-neg":s==="Эерэг"?"p-pos":"p-neu"}">${s}</span>`;
 const pillU=u=>`<span class="pill ${u==="Өндөр"?"p-hi":u==="Дунд"?"p-mid":"p-lo"}">${u}</span>`;
-const fmt=ts=>new Date(ts).toLocaleString("mn-MN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false});
+const fmt=ts=>{const d=new Date(ts),p=n=>String(n).padStart(2,"0");return `${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
+// copy column headers into data-label so tables can stack into cards on phones
+function labelize(t){const h=[...t.querySelectorAll("tr:first-child th")].map(x=>x.textContent);t.querySelectorAll("tr").forEach(r=>[...r.children].forEach((c,i)=>{if(c.tagName==="TD")c.dataset.label=h[i]||""}))}
 const short=(h,n=10)=>h.slice(0,n)+"…";
 function countBy(k){const m={};offchain.forEach(r=>m[r[k]]=(m[r[k]]||0)+1);return Object.entries(m).sort((a,b)=>b[1]-a[1])}
 function render(){
@@ -247,10 +284,12 @@ function render(){
   $("#locs").innerHTML=locs.map(([c,v])=>`<div class="bar"><span>${c}</span><div class="t"><div class="f" style="width:${v/lm*100}%;background:#21a88a"></div></div><b>${v}</b></div>`).join("");
   $("#urgent").innerHTML="<tr><th>Огноо</th><th>Санал</th><th>Ангилал</th><th>Яаралтай</th></tr>"+offchain.filter(r=>r.urg!=="Бага").sort((a,b)=>(a.urg==="Өндөр"?-1:1)-(b.urg==="Өндөр"?-1:1)).slice(0,6).map(r=>`<tr><td>${fmt(r.ts)}</td><td>${r.text}</td><td><span class="pill p-cat">${r.cat}</span></td><td>${pillU(r.urg)}</td></tr>`).join("");
   renderChain(new Set()); renderBrief();
+  labelize($("#recent")); labelize($("#urgent"));
 }
 function renderChain(bad){
   $("#chain").innerHTML="<tr><th>#</th><th>Цаг</th><th>Ангилал</th><th>Агуулгын хэш</th><th>Өмнөх блокийн хэш</th><th>Блокийн хэш</th><th>Төлөв</th></tr>"+
     chain.map((b,i)=>`<tr class="${bad.has(i)?"broken":""}"><td>${b.index}</td><td>${fmt(b.ts)}</td><td>${b.cat}</td><td class="mono">${short(b.contentHash,16)}</td><td class="mono">${short(b.prev,16)}</td><td class="mono">${short(b.hash,16)}</td><td>${bad.has(i)?'<span class="pill p-neg">Зөрчил</span>':'<span class="pill p-pos">Баталгаатай</span>'}</td></tr>`).join("");
+  labelize($("#chain"));
 }
 function renderBrief(){
   const cats=countBy("cat").slice(0,3),n=offchain.length;

@@ -54,7 +54,7 @@ export default function App() {
           <a key={key} href={`#/${key}`} className={route.name === key ? 'active' : ''}>{label}</a>
         ))}
       </nav>
-      <main><Page arg={route.arg} /></main>
+      <main><Page key={route.name} arg={route.arg} /></main>
       <footer>Залуу Дуу Хоолой · Нээлттэй эхийн судалгааны прототип · Саналын бичвэр блокчейнд бичигдэхгүй, зөвхөн хэш бүртгэгдэнэ.</footer>
     </>
   )
