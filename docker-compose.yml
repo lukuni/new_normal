@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: zaluu
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zaluu}
+      POSTGRES_DB: zaluu
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zaluu"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg2://zaluu:${POSTGRES_PASSWORD:-zaluu}@db:5432/zaluu
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me}
+      DEMO_MODE: ${DEMO_MODE:-true}
+      SEED_ON_START: ${SEED_ON_START:-true}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CORS_ORIGINS: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:
